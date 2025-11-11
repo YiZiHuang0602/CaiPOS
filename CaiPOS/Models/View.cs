@@ -2,7 +2,7 @@
 
 namespace CaiPOS.Models
 {
-    public class Cart
+    public class View
     {
         public Guid CartId { get; set; }
 
@@ -14,5 +14,7 @@ namespace CaiPOS.Models
         public int TotalQuantity { get; set; }
 
         public int TotalAmount { get; set; }
+
+        public List<CartItem>? CartItem { get; set; }
     }
 }

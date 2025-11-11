@@ -4,6 +4,7 @@ namespace CaiPOS.Models
 {
     public class UserManagement
     {
+        [Key]
         public Guid UserId {  get; set; }
         public int MemberId { get; set; }
 

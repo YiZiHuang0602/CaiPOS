@@ -4,7 +4,7 @@ namespace CaiPOS.Models
 {
     public class Product
     {
-        public Guid ProductId { get; set; }
+        public Guid ProductId { get; set; } = Guid.NewGuid();
 
         [Required]
         public required string ProductName { get; set; }
@@ -15,7 +15,7 @@ namespace CaiPOS.Models
         public string? Description { get; set; }
 
         [Required]
-        public decimal price { get; set; }
+        public decimal Price { get; set; }
 
         [Required]
         public required string Status { get; set; }

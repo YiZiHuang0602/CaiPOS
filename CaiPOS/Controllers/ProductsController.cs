@@ -1,5 +1,6 @@
 ﻿using CaiPOS.Data;
 using CaiPOS.Models;
+using CaiPOS.ViewModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace CaiPOS.Controllers
 {
+
     [ApiController]
     public class ProductsController : ControllerBase
     {
@@ -21,23 +23,59 @@ namespace CaiPOS.Controllers
         // Get api/products
         [Route("api/[controller]/GetProducts")]
         [HttpGet]
-        public async Task<List<Product>> GetProducts()
+        public async Task<List<ProductDto>> GetProducts()
         {
-            return await _context.Product.ToListAsync();
+            var products = new List<ProductDto>();
+            var product = await _context.Product.ToListAsync();
+            foreach (var i in product)
+            {
+                var pDto = new ProductDto
+                {
+                    ProductName = i.ProductName,
+                    Category = i.Category,
+                    Description = i.Description,
+                    Price = i.Price,
+                    Status = i.Status
+                };
+                products.Add(pDto);
+            }
+            return products;
         }
 
         [Route("api/[controller]/GetSearchProduct")]
         [HttpGet]
-        public async Task<List<Product>> GetSearchProduct(string searchProduct)
+        public async Task<ApiResponse<ProductDto>> GetSearchProduct(string searchProduct)
         {
-            var products = from p in _context.Product
-                           select p;
-
-            if(!string.IsNullOrEmpty(searchProduct))
+            try
             {
-                products = products.Where(p => p.ProductName.Contains(searchProduct));
+                var product = await _context.Product.FirstOrDefaultAsync(p => p.ProductName == searchProduct);
+
+                if (product != null)
+                {
+                    return new ApiResponse<ProductDto>
+                    {
+                        Success = true,
+                        Message = "搜尋成功~",
+                        Data = new ProductDto
+                        {
+                            ProductName = product.ProductName,
+                            Category = product.Category,
+                            Description = product.Description,
+                            Price = product.Price,
+                            Status = product.Status
+                        }
+                    };
+                }
+                throw new Exception($"找不到{searchProduct}");
             }
-            return await products.ToListAsync();
+            catch (Exception ex)
+            {
+                return new ApiResponse<ProductDto>
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
+            }
         }
 
         [Route("api/[controller]/CreateProduct")]

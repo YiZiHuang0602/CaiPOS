@@ -1,15 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CaiPOS.Models
+namespace CaiPOS.ViewModel
 {
-    public class CartItem
+    public class ShoppingCarItemDto
     {
-        public Guid CartItemId { get; set; }
-
-        public Guid CartId { get; set; }
-
-        public Guid ProductId { get; set; }
-
         [Required]
         public required string ProductName { get; set; }
 

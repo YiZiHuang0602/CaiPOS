@@ -12,8 +12,8 @@ namespace CaiPOS.Data
 
         public DbSet<CaiPOS.Models.UserManagement> UserManagement { get; set; }
         public DbSet<CaiPOS.Models.Product> Product { get; set; }
-        public DbSet<CaiPOS.Models.Cart> Cart { get; set; }
-        public DbSet<CaiPOS.Models.CartItem> CartItem { get; set; }
+        public DbSet<CaiPOS.Models.ShoppingCar> Cart { get; set; }
+        public DbSet<CaiPOS.Models.ShoppingCarItem> CartItem { get; set; }
         public DbSet<CaiPOS.Models.Order> Order { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

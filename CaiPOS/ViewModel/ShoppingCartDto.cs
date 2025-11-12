@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CaiPOS.Models
+namespace CaiPOS.ViewModel
 {
-    public class View
+    public class ShoppingCartDto
     {
-        public Guid CartId { get; set; }
-
         public int MemberID { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
@@ -14,7 +12,5 @@ namespace CaiPOS.Models
         public int TotalQuantity { get; set; }
 
         public int TotalAmount { get; set; }
-
-        public List<CartItem>? CartItem { get; set; }
     }
 }

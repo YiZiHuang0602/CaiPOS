@@ -80,73 +80,93 @@ namespace CaiPOS.Controllers
 
         [Route("api/[controller]/CreateProduct")]
         [HttpPost]
-        public async Task<Boolean> CreateProduct(Product product)
+        public async Task<ApiResponse> CreateProduct(ProductDto productDto)
         {
-            var foundProduct = await _context.Product.FirstOrDefaultAsync(p => p.ProductName == product.ProductName);
+            var foundProduct = await _context.Product.FirstOrDefaultAsync(p => p.ProductName == productDto.ProductName);
+            var product = new Product
+            {
+                ProductName = productDto.ProductName,
+                Category = productDto.Category,
+                Description = productDto.Description,
+                Price = productDto.Price,
+                Status = productDto.Status
+            };
+
             if (foundProduct == null)
             {
                 _context.Add(product);
                 await _context.SaveChangesAsync();
-                return true;
+                return new ApiResponse
+                {
+                    Success = true,
+                    Message = "新增成功!",
+                };
             }
-            return false;
+            return new ApiResponse
+            {
+                Success = true,
+                Message = "新增失敗!!",
+            };
         }
 
         [Route("api/[controller]/EditProduct")]
         [HttpPatch]
-        public async Task<IActionResult> EditProduct(Product product)
+        public async Task<ApiResponse> EditProduct(string search, ProductDto productDto)
         {
-            var foundProduct = await _context.Product.FirstOrDefaultAsync(p => p.ProductName == product.ProductName);
-            if (foundProduct != null)
+            try
             {
-                return NotFound();
-            }
+                var foundProduct = await _context.Product.FirstOrDefaultAsync(p => p.ProductName == search);
+                if (foundProduct == null) throw new Exception($"找不到 {search}");
+                foundProduct.ProductName = productDto.ProductName;
+                foundProduct.Category = productDto.Category;
+                foundProduct.Description = productDto.Description;
+                foundProduct.Price = productDto.Price;
+                foundProduct.Status = productDto.Status;
+                await _context.SaveChangesAsync();
+                return new ApiResponse
+                {
+                    Success = true,
+                    Message = "修改成功",
+                };
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(product.ProductId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(GetProducts));
             }
-            return BadRequest();
+            catch (Exception ex)
+            {
+                return new ApiResponse
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
+            }
         }
 
         [Route("api/[controller]/DeleteProduct")]
         [HttpDelete]
-        public async Task<IActionResult> DeleteProduct(Product product)
+        public async Task<ApiResponse> DeleteProduct(string productName)
         {
-            var foundProduct = await _context.Product.FirstOrDefaultAsync(p => p.ProductName == product.ProductName);
-            if (foundProduct == null)
+            try
             {
-                return NotFound();
+                var foundProduct = await _context.Product.FirstOrDefaultAsync(p => p.ProductName == productName);
+                if (foundProduct == null) throw new Exception($"找不到{productName}");
+
+                _context.Product.Remove(foundProduct);
+                await _context.SaveChangesAsync();
+                return new ApiResponse
+                {
+                    Success = true,
+                    Message = "刪除成功"
+                };
+            }
+            catch (Exception ex) 
+            {
+                return new ApiResponse
+                {
+                    Success = false,
+                    Message = ex.Message
+                };
             }
 
-            var productToDelete = await _context.Product.FindAsync(product.ProductId);
-            if (productToDelete != null)
-            {
-                _context.Product.Remove(productToDelete);
-            }
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(GetProducts));
         }
 
-        private bool ProductExists(Guid id)
-        {
-            return _context.Product.Any(e => e.ProductId == id);
-        }
     }
 }

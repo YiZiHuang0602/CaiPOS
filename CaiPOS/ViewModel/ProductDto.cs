@@ -5,8 +5,9 @@ namespace CaiPOS.ViewModel
     public class ProductDto
     {
         [Required]
-        public required string ProductName { get; set; }
+        public string ProductName { get; set; }
 
+        [Required]
         public string? Category { get; set; }
 
         public string? Description { get; set; }
@@ -14,6 +15,7 @@ namespace CaiPOS.ViewModel
         [Required]
         public decimal Price { get; set; }
 
+        [Required]
         public string? Status { get; set; }
     }
 }

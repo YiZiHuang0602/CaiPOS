@@ -5,6 +5,7 @@ using System.Text;
 using CaiPOS.Data;
 using CaiPOS.Model;
 using CaiPOS.ViewModel;
+using System.Security.Cryptography;
 
 namespace CaiPOS.Controllers
 {
@@ -21,6 +22,30 @@ namespace CaiPOS.Controllers
                 s.Append(rnd.Next(1, 9));
             }
             return s.ToString();
+        }
+
+        private static List<string> SHA256Password(string password)
+        {
+            List<string> result = new List<string>();
+            using (var sha = SHA256.Create())
+            {
+                StringBuilder sb = new StringBuilder();
+                Random rand = new Random();
+                for (int i = 0;i < 6;i++)
+                {
+                    sb.Append((char)rand.Next(33, 47));
+                }
+                result.Add(sb.ToString());
+                sb.Clear();
+                byte[] bytes = Encoding.UTF8.GetBytes(password);
+                byte[] hashBytes = sha.ComputeHash(bytes);
+                foreach (byte b in hashBytes)
+                {
+                    sb.Append(b.ToString("x2"));
+                }
+                result.Add(sb.ToString());
+                return result;
+            }
         }
         public UserController(DbConn conn)
         {
@@ -63,8 +88,8 @@ namespace CaiPOS.Controllers
             }
         }
 
-        [HttpPost("PostUser")]
-        public async Task<ApiResponse> PostUser(UserDto uDto)
+        [HttpPost("CreateUser")]
+        public async Task<ApiResponse> CreateUser(UserDto uDto)
         {
             try
             {
@@ -72,13 +97,15 @@ namespace CaiPOS.Controllers
                 {
                     throw new ArgumentNullException("姓名、電話、密碼欄位皆不可為空");
                 }
+                var passwords = SHA256Password(uDto.Password);
                 var user = new User
                 {
                     UserId = Guid.NewGuid(),
                     UserNumber = CreateUserNumber(),
                     Name = uDto.Name,
                     PhoneNumber = uDto.PhoneNumber,
-                    Password = uDto.Password,
+                    Salt = passwords[0],
+                    Password = passwords[1],
                 };
                 await _conn.Users.AddAsync(user);
                 await _conn.SaveChangesAsync();
@@ -131,9 +158,11 @@ namespace CaiPOS.Controllers
                 if (string.IsNullOrEmpty(uDto.Name)) throw new ArgumentNullException($"使用者姓名不可為空");
                 var user = _conn.Users.FirstOrDefault(u => u.Name == userName);
                 if (user == null) throw new KeyNotFoundException($"找不到名為 {userName} 的使用者");
+                var passwords = SHA256Password(uDto.Password);
                 user.Name = uDto.Name;
                 user.PhoneNumber = uDto.PhoneNumber;
-                user.Password = uDto.Password;
+                user.Salt = passwords[0];
+                user.Password = passwords[1];
                 await _conn.SaveChangesAsync();
                 return new ApiResponse
                 {

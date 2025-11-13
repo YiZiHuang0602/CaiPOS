@@ -85,8 +85,8 @@ namespace CaiPOS.Controllers
             }
         }
 
-        [HttpPost("Postproduct")]
-        public async Task<ApiResponse> Postproduct(ProductsDto pDto)
+        [HttpPost("Createproduct")]
+        public async Task<ApiResponse> CreateProduct(ProductsDto pDto)
         {
             try
             {
@@ -123,8 +123,8 @@ namespace CaiPOS.Controllers
             }
         }
 
-        [HttpDelete("Delete")]
-        public async Task<ApiResponse> Delete(string productName)
+        [HttpDelete("DeleteProduct")]
+        public async Task<ApiResponse> DeleteProduct(string productName)
         {
             try
             {
@@ -133,6 +133,7 @@ namespace CaiPOS.Controllers
                     throw new ArgumentNullException(nameof(productName));
                 }
                 var Products = await _conn.Prroducts.FirstOrDefaultAsync(s => s.ProductName == productName);
+                if (Products == null) throw new KeyNotFoundException(nameof(Products));
                 _conn.Prroducts.Remove(Products);
                 await _conn.SaveChangesAsync();
                 return new ApiResponse

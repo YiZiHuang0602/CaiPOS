@@ -16,9 +16,9 @@ namespace CaiPOS.Data
         public DbSet<CaiPOS.Models.ShoppingCarItem> CartItem { get; set; }
         public DbSet<CaiPOS.Models.Order> Order { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        /*protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<UserManagement>().HasKey(u => u.UserId);
-        }
+        }*/
     }
 }

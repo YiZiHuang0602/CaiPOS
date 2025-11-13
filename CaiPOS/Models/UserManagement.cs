@@ -5,8 +5,8 @@ namespace CaiPOS.Models
     public class UserManagement
     {
         [Key]
-        public Guid UserId {  get; set; }
-        public int MemberId { get; set; }
+        public Guid UserId {  get; set; } = Guid.NewGuid();
+        public Guid MemberId { get; set; } = Guid.NewGuid();
 
         [Required, StringLength(20)]
         public required string UserName { get; set; }

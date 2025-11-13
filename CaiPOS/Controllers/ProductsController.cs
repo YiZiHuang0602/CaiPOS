@@ -9,7 +9,6 @@ using System.Runtime.InteropServices;
 
 namespace CaiPOS.Controllers
 {
-
     [ApiController]
     public class ProductsController : ControllerBase
     {

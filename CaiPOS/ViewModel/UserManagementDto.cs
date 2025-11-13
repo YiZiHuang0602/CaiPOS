@@ -13,8 +13,8 @@ namespace CaiPOS.ViewModel
         [Required, StringLength(10, MinimumLength = 10), RegularExpression(@"^09[0-9]{8}$")]
         public required string Phone { get; set; }
 
-        [Required, StringLength(20, MinimumLength = 6)]
-        public required string Password { get; set; }
+        [StringLength(20, MinimumLength = 6)]
+        public string? Password { get; set; }
 
         public string? Email { get; set; }
     }

@@ -29,12 +29,37 @@ namespace CaiPOS.Controllers
                     UserName = i.UserName,
                     Gender = i.Gender,
                     Phone = i.Phone,
-                    Password = i.Password,
                     Email = i.Email
                 };
                 userDatas.Add(user);
             }
             return userDatas;
+        }
+
+        [HttpPost("AddUserInformation")]
+        public async Task<ApiResponse> AddUserInformation(UserManagementDto userManagementDto)
+        {
+            var foundUser = await _context.UserManagement.FirstOrDefaultAsync(u => u.UserName == userManagementDto.UserName);
+            var userData = new UserManagement
+            {
+                UserName = userManagementDto.UserName,
+                Gender = userManagementDto.Gender,
+                Phone = userManagementDto.Phone,
+                Password = userManagementDto.Password ?? string.Empty,
+                Email = userManagementDto.Email,
+            };
+
+            if (foundUser == null)
+            {
+                _context.UserManagement.Add(userData);
+                await _context.SaveChangesAsync();
+                return new ApiResponse { Success = true, Message = "使用者新增成功" };
+            }
+            else if (foundUser != null)
+            {
+                return new ApiResponse { Success = false, Message = "使用者名稱已被其他用戶使用" };
+            }
+            return new ApiResponse { Success = false, Message = "使用者新增失敗" };
         }
     }
 }

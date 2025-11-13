@@ -14,7 +14,7 @@ namespace CaiPOS.Models
         [Required]
         public required string Gender { get; set; }
 
-        [Required, StringLength(10, MinimumLength = 10), RegularExpression(@"^09[0-9]{8}$")]
+        [Required, StringLength(10, MinimumLength = 10), RegularExpression(@"^09[0-9]{8}$", ErrorMessage = "電話格式錯誤，必須以09開頭，共10碼")]
         public required string Phone { get; set; }
 
         [Required, StringLength(20, MinimumLength = 6)]

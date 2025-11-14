@@ -12,5 +12,6 @@ namespace CaiPOS.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Orders> Orders { get; set; }
         public DbSet<ShoppingCar> ShoppingCar { get; set; }
+        public DbSet<CarItem> CarItems { get; set; }
     }
 }

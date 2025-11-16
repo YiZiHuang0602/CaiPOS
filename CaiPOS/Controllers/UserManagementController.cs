@@ -17,8 +17,8 @@ namespace CaiPOS.Controllers
             _context = context;
         }
 
-        [HttpGet("GetUserInfornation")]
-        public async Task<List<UserManagementDto>> GetUserInfornation()
+        [HttpGet("GetAllUserInfornation")]
+        public async Task<List<UserManagementDto>> GetAllUserInfornation()
         {
             var userDatas = new List<UserManagementDto>();
             var userData = await _context.UserManagement.ToListAsync();
@@ -60,6 +60,51 @@ namespace CaiPOS.Controllers
                 return new ApiResponse { Success = false, Message = "使用者名稱已被其他用戶使用" };
             }
             return new ApiResponse { Success = false, Message = "使用者新增失敗" };
+        }
+
+        [HttpPatch("EditUserInformation")]
+        public async Task<ApiResponse> EditUserInformation(string searchUser, [Bind("Username, Gender, Phone, Password")] UserManagementDto userManagementDto)
+        {
+            try
+            {
+                var foundUser = await _context.UserManagement.FirstOrDefaultAsync(u => u.UserName == searchUser);
+                if (foundUser == null) return new ApiResponse { Success = false, Message = $"找不到{searchUser}的資料" };
+                if (ModelState.IsValid)
+                {
+                    foundUser.UserName = userManagementDto.UserName;
+                    foundUser.Gender = userManagementDto.Gender;
+                    foundUser.Phone = userManagementDto.Phone;
+                    
+                    if (!string.IsNullOrEmpty(foundUser.Password))
+                    {
+                        foundUser.Password = userManagementDto.Password;
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                return new ApiResponse { Success = true, Message = "使用者資料更新成功" };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse { Success = false, Message = $"更新失敗: {ex.Message}" };
+            }
+        }
+
+        [HttpDelete("DeleteUserInformation")]
+        public async Task<ApiResponse> DeleteUserInformation(string deleteUser)
+        {
+            try
+            {
+                var foundUser = await _context.UserManagement.FirstOrDefaultAsync(u => u.UserName == deleteUser);
+                if(foundUser == null) return new ApiResponse { Success = false, Message = $"找不到{deleteUser}的資料" };
+                _context.UserManagement.Remove(foundUser);
+                await _context.SaveChangesAsync();
+                return new ApiResponse { Success = true, Message = $"{deleteUser}的資料刪除成功" };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse { Success = false, Message = $"刪除失敗: {ex.Message}" };
+            }
         }
     }
 }

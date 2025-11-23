@@ -66,9 +66,26 @@ namespace CaiPOS.Controllers
         }
 
         [HttpPost("AddUserInformation")]
-        public async Task<ApiResponse> AddUserInformation(UserManagementDto userManagementDto)
+        public async Task<ApiResponse> AddUserInformation([FromBody] UserManagementDto userManagementDto)
         {
-            var foundUser = await _context.UserManagement.FirstOrDefaultAsync(u => u.UserName == userManagementDto.UserName);
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                return new ApiResponse
+                {
+                    Success = false,
+                    Message = string.Join(";", errors)
+                };
+            }
+            var exists = await _context.UserManagement.AnyAsync(u => u.UserName == userManagementDto.UserName);
+            if (exists)
+            {
+                return new ApiResponse { Success = false, Message = "使用者名稱已被其他用戶使用" };
+            }
             var userData = new UserManagement
             {
                 UserName = userManagementDto.UserName,
@@ -78,22 +95,28 @@ namespace CaiPOS.Controllers
                 Email = userManagementDto.Email,
             };
 
-            if (foundUser == null)
-            {
-                _context.UserManagement.Add(userData);
-                await _context.SaveChangesAsync();
-                return new ApiResponse { Success = true, Message = "使用者新增成功" };
-            }
-            else if (foundUser != null)
-            {
-                return new ApiResponse { Success = false, Message = "使用者名稱已被其他用戶使用" };
-            }
-            return new ApiResponse { Success = false, Message = "使用者新增失敗" };
+            _context.UserManagement.Add(userData);
+            await _context.SaveChangesAsync();
+
+            return new ApiResponse { Success = true, Message = "使用者新增成功" };
         }
 
         [HttpPatch("EditUserInformation")]
         public async Task<ApiResponse> EditUserInformation(string searchUser, [Bind("Username, Gender, Phone, Password")] UserManagementDto userManagementDto)
         {
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+                return new ApiResponse
+                {
+                    Success = false,
+                    Message = string.Join(";", errors)
+                };
+            }
+            
             try
             {
                 var foundUser = await _context.UserManagement.FirstOrDefaultAsync(u => u.UserName == searchUser);

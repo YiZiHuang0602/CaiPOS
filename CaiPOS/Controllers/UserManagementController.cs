@@ -36,6 +36,35 @@ namespace CaiPOS.Controllers
             return userDatas;
         }
 
+        [HttpGet("SearchUserInformation")]
+        public async Task<ApiResponse<UserManagementDto>> SearchUserInformation(string searchUser)
+        {
+            try
+            {
+                var foundUser = await _context.UserManagement.FirstOrDefaultAsync(u => u.UserName == searchUser);
+                if (foundUser != null)
+                {
+                    return new ApiResponse<UserManagementDto>
+                    {
+                        Success = true,
+                        Message = "使用者資料搜尋成功",
+                        Data = new UserManagementDto
+                        {
+                            UserName = foundUser.UserName,
+                            Gender = foundUser.Gender,
+                            Phone = foundUser.Phone,
+                            Email = foundUser.Email
+                        }
+                    };
+                }
+                throw new Exception($"找不到{searchUser}使用者的資料");
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse<UserManagementDto> { Success = false, Message = $"搜尋失敗: {ex.Message}" };
+            }
+        }
+
         [HttpPost("AddUserInformation")]
         public async Task<ApiResponse> AddUserInformation(UserManagementDto userManagementDto)
         {

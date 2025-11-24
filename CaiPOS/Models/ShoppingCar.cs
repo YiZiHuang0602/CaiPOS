@@ -7,7 +7,7 @@ namespace CaiPOS.Models
         [Key]
         public Guid CarId { get; set; } = new Guid();
 
-        public Guid MemberID { get; set; } = new Guid();
+        public Guid UserID { get; set; } = new Guid();
 
         public DateTime CreatedAt { get; set; }
 

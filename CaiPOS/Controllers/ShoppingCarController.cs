@@ -27,13 +27,13 @@ namespace CaiPOS.Controllers
             return _context.Products.FirstOrDefault(p => p.ProductId == productId).ProductName;
         }
 
-        /*[HttpGet("GetShoppingCartData")]
+        [HttpGet("GetShoppingCartData")]
         public async Task<List<ShoppingCarItemDto>> GetShoppingCarData(string userName)
         {
             List<ShoppingCarItemDto> items = new List<ShoppingCarItemDto>();
             var uId = GetUserIdByName(userName);
-            var car = await _context.ShoppingCar.FirstOrDefaultAsync(c => c.UserId == uId);
-            var item = _context.ShoppingCarItems.Where(ci => ci.CarId == car.carId).ToList();
+            var car = await _context.ShoppingCar.FirstOrDefaultAsync(c => c.UserID == uId);
+            var item = _context.ShoppingCarItems.Where(ci => ci.CarId == car.CarId).ToList();
             foreach (var i in item)
             {
                 var dto = new ShoppingCarItemDto
@@ -45,6 +45,16 @@ namespace CaiPOS.Controllers
                 };
                 items.Add(dto);
             }
+            return items;
+        }
+
+        /*[HttpGet("GetShoppingCar")]
+        public async Task<List<ShoppingCarDto>> GetShoppingCar(string userName)
+        {
+            List<ShoppingCarDto> carDtos = new List<ShoppingCarDto>();
+            var uId = GetUserIdByName(userName);
+            var car = await _context.ShoppingCar.FirstOrDefaultAsync(c => c.UserID == uId);
+            
         }*/
     }
 }

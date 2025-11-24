@@ -79,9 +79,29 @@ namespace CaiPOS.Controllers
 
         [Route("api/[controller]/CreateProduct")]
         [HttpPost]
-        public async Task<ApiResponse> CreateProduct(ProductDto productDto)
+        public async Task<ApiResponse> CreateProduct([FromBody] ProductDto productDto)
         {
+            if(!ModelState.IsValid)
+            {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
+
+                return  new ApiResponse
+                {
+                    Success = false,
+                    Message = string.Join(";",errors),
+                };
+            }
+
             var foundProduct = await _context.Product.FirstOrDefaultAsync(p => p.ProductName == productDto.ProductName);
+            if (foundProduct != null) return new ApiResponse
+            {
+                Success = false,
+                Message = "商品已存在!!",
+            };
+
             var product = new Product
             {
                 ProductName = productDto.ProductName,
@@ -91,20 +111,12 @@ namespace CaiPOS.Controllers
                 Status = productDto.Status
             };
 
-            if (foundProduct == null)
-            {
-                _context.Add(product);
-                await _context.SaveChangesAsync();
-                return new ApiResponse
-                {
-                    Success = true,
-                    Message = "新增成功!",
-                };
-            }
+            _context.Add(product);
+            await _context.SaveChangesAsync();
             return new ApiResponse
             {
                 Success = true,
-                Message = "新增失敗!!",
+                Message = "新增成功!",
             };
         }
 
@@ -112,31 +124,35 @@ namespace CaiPOS.Controllers
         [HttpPatch]
         public async Task<ApiResponse> EditProduct(string search, ProductDto productDto)
         {
-            try
+            if (!ModelState.IsValid)
             {
-                var foundProduct = await _context.Product.FirstOrDefaultAsync(p => p.ProductName == search);
-                if (foundProduct == null) throw new Exception($"找不到 {search}");
-                foundProduct.ProductName = productDto.ProductName;
-                foundProduct.Category = productDto.Category;
-                foundProduct.Description = productDto.Description;
-                foundProduct.Price = productDto.Price;
-                foundProduct.Status = productDto.Status;
-                await _context.SaveChangesAsync();
-                return new ApiResponse
-                {
-                    Success = true,
-                    Message = "修改成功",
-                };
-
-            }
-            catch (Exception ex)
-            {
+                var errors = ModelState.Values
+                    .SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage)
+                    .ToList();
                 return new ApiResponse
                 {
                     Success = false,
-                    Message = ex.Message
+                    Message = string.Join(";", errors)
                 };
             }
+
+            var foundProduct = await _context.Product.FirstOrDefaultAsync(p => p.ProductName == search);
+            if (foundProduct == null) throw new Exception($"找不到 {search}");
+
+            foundProduct.ProductName = productDto.ProductName;
+            foundProduct.Category = productDto.Category;
+            foundProduct.Description = productDto.Description;
+            foundProduct.Price = productDto.Price;
+            foundProduct.Status = productDto.Status;
+
+            await _context.SaveChangesAsync();
+
+            return new ApiResponse
+            {
+                Success = true,
+                Message = "修改成功",
+            };
         }
 
         [Route("api/[controller]/DeleteProduct")]

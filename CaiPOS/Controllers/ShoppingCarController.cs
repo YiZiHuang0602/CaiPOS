@@ -17,6 +17,22 @@ namespace CaiPOS.Controllers
             _context = context;
         }
 
+        private Guid GetProductIdByProductName(string productName)
+        {
+            return _context.Product
+                .Where(p => p.ProductName == productName)
+                .Select(p => p.ProductId)
+                .FirstOrDefault();
+        }
+
+        private string GetUserNameByUserId(Guid userId)
+        {
+            return _context.UserManagement
+                .Where(u => u.UserId == userId)
+                .Select(u => u.UserName)
+                .FirstOrDefault();
+        }
+
         /*[HttpGet("GetShoppingCartData")]
         public async Task<List<ShoppingCarDto>> GetShoppingCarData()
         {
@@ -26,7 +42,6 @@ namespace CaiPOS.Controllers
             {
                 var dto = new ShoppingCarDto
                 {
-                    ProductName = .ProductName,
                     CreatedAt = shoppingCar.CreatedAt,
                     TotalQuantity = shoppingCar.TotalQuantity,
                     TotalAmount = shoppingCar.TotalAmount

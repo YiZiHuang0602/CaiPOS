@@ -1,0 +1,38 @@
+﻿using CaiPOS.Data;
+using CaiPOS.Models;
+using CaiPOS.ViewModel;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace CaiPOS.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ShoppingCarController : ControllerBase
+    {
+        private readonly CaiPOSContext _context;
+
+        public ShoppingCarController(CaiPOSContext context)
+        {
+            _context = context;
+        }
+
+        /*[HttpGet("GetShoppingCartData")]
+        public async Task<List<ShoppingCarDto>> GetShoppingCarData()
+        {
+            var shoppingCarDatas = new List<ShoppingCarDto>();
+            var shoppingCars = await _context.ShoppingCar.ToListAsync();
+            foreach(var shoppingCar in shoppingCars)
+            {
+                var dto = new ShoppingCarDto
+                {
+                    ProductName = .ProductName,
+                    CreatedAt = shoppingCar.CreatedAt,
+                    TotalQuantity = shoppingCar.TotalQuantity,
+                    TotalAmount = shoppingCar.TotalAmount
+                };
+                shoppingCarDatas.Add(dto);
+            }
+        }*/
+    }
+}

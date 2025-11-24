@@ -2,10 +2,8 @@
 
 namespace CaiPOS.ViewModel
 {
-    public class ShoppingCartDto
+    public class ShoppingCarDto
     {
-        public int MemberID { get; set; }
-
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime CreatedAt { get; set; }
 

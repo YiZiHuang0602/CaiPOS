@@ -5,11 +5,10 @@ namespace CaiPOS.Models
     public class ShoppingCar
     {
         [Key]
-        public Guid CartId { get; set; }
+        public Guid CarId { get; set; } = new Guid();
 
-        public int MemberID { get; set; }
+        public Guid MemberID { get; set; } = new Guid();
 
-        [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         public DateTime CreatedAt { get; set; }
 
         public int TotalQuantity { get; set; }

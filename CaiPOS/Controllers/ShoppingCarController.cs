@@ -17,26 +17,21 @@ namespace CaiPOS.Controllers
             _context = context;
         }
 
-        private Guid GetProductIdByProductName(string productName)
+        private Guid GetUserIdByName(string userName)
         {
-            return _context.Product
-                .Where(p => p.ProductName == productName)
-                .Select(p => p.ProductId)
-                .FirstOrDefault();
+            return _context.UserManagement.FirstOrDefault(u => u.UserName == userName).UserId;
         }
 
-        private string GetUserNameByUserId(Guid userId)
+        private string GetProductNameById(Guid productId)
         {
-            return _context.UserManagement
-                .Where(u => u.UserId == userId)
-                .Select(u => u.UserName)
-                .FirstOrDefault();
+            return _context.Product.FirstOrDefault(p => p.ProductId == productId).ProductName;
         }
 
         /*[HttpGet("GetShoppingCartData")]
         public async Task<List<ShoppingCarDto>> GetShoppingCarData()
         {
             var shoppingCarDatas = new List<ShoppingCarDto>();
+            var userId = GetUserIdByName(userId);
             var shoppingCars = await _context.ShoppingCar.ToListAsync();
             foreach(var shoppingCar in shoppingCars)
             {

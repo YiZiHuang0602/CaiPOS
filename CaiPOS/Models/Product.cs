@@ -5,6 +5,7 @@ namespace CaiPOS.Models
     public class Product
     {
         public Guid ProductId { get; set; } = Guid.NewGuid();
+        public string? ProductNumber { get; set; }
 
         [Required]
         public required string ProductName { get; set; }

@@ -6,7 +6,7 @@ namespace CaiPOS.Models
     {
         [Key]
         public Guid UserId {  get; set; } = Guid.NewGuid();
-        public string UserNumber { get; set; }
+        public int UserNumber { get; set; }
 
         public string UserName { get; set; }
 

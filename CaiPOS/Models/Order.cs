@@ -10,10 +10,8 @@ namespace CaiPOS.Models
 
         public DateTime OrderDate { get; set; }
 
-        public int TotalAmount { get; set; }
+        public int TotalCount { get; set; }
 
-        [Required]
-        public required string OrderStatus { get; set; }
-
+        public int TotalPrice { get; set; }
     }
 }

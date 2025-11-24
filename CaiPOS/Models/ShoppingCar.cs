@@ -9,10 +9,12 @@ namespace CaiPOS.Models
 
         public Guid UserID { get; set; } = new Guid();
 
+        public string ProductName { get; set; }
+
         public DateTime CreatedAt { get; set; }
 
-        public int TotalQuantity { get; set; }
+        public int ProductCount { get; set; }
 
-        public int TotalAmount { get; set; }
+        public int TotalPrice { get; set; }
     }
 }

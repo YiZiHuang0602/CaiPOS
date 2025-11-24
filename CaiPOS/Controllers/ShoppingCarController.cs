@@ -19,19 +19,19 @@ namespace CaiPOS.Controllers
 
         private Guid GetUserIdByName(string userName)
         {
-            return _context.UserManagement.FirstOrDefault(u => u.UserName == userName).UserId;
+            return _context.Users.FirstOrDefault(u => u.UserName == userName).UserId;
         }
 
         private string GetProductNameById(Guid productId)
         {
-            return _context.Product.FirstOrDefault(p => p.ProductId == productId).ProductName;
+            return _context.Products.FirstOrDefault(p => p.ProductId == productId).ProductName;
         }
 
         /*[HttpGet("GetShoppingCartData")]
         public async Task<List<ShoppingCarDto>> GetShoppingCarData()
         {
             var shoppingCarDatas = new List<ShoppingCarDto>();
-            var userId = GetUserIdByName(userId);
+            var userId = GetUserIdByName(userName);
             var shoppingCars = await _context.ShoppingCar.ToListAsync();
             foreach(var shoppingCar in shoppingCars)
             {

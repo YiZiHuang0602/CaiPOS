@@ -25,7 +25,7 @@ namespace CaiPOS.Controllers
         public async Task<List<ProductDto>> GetProducts()
         {
             var products = new List<ProductDto>();
-            var product = await _context.Product.ToListAsync();
+            var product = await _context.Products.ToListAsync();
             foreach (var i in product)
             {
                 var pDto = new ProductDto
@@ -47,7 +47,7 @@ namespace CaiPOS.Controllers
         {
             try
             {
-                var product = await _context.Product.FirstOrDefaultAsync(p => p.ProductName == searchProduct);
+                var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductName == searchProduct);
 
                 if (product != null)
                 {
@@ -95,7 +95,7 @@ namespace CaiPOS.Controllers
                 };
             }
 
-            var foundProduct = await _context.Product.FirstOrDefaultAsync(p => p.ProductName == productDto.ProductName);
+            var foundProduct = await _context.Products.FirstOrDefaultAsync(p => p.ProductName == productDto.ProductName);
             if (foundProduct != null) return new ApiResponse
             {
                 Success = false,
@@ -137,7 +137,7 @@ namespace CaiPOS.Controllers
                 };
             }
 
-            var foundProduct = await _context.Product.FirstOrDefaultAsync(p => p.ProductName == search);
+            var foundProduct = await _context.Products.FirstOrDefaultAsync(p => p.ProductName == search);
             if (foundProduct == null) throw new Exception($"找不到 {search}");
 
             foundProduct.ProductName = productDto.ProductName;
@@ -161,10 +161,10 @@ namespace CaiPOS.Controllers
         {
             try
             {
-                var foundProduct = await _context.Product.FirstOrDefaultAsync(p => p.ProductName == productName);
+                var foundProduct = await _context.Products.FirstOrDefaultAsync(p => p.ProductName == productName);
                 if (foundProduct == null) throw new Exception($"找不到{productName}");
 
-                _context.Product.Remove(foundProduct);
+                _context.Products.Remove(foundProduct);
                 await _context.SaveChangesAsync();
                 return new ApiResponse
                 {

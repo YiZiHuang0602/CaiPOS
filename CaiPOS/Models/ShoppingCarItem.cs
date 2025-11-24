@@ -5,9 +5,9 @@ namespace CaiPOS.Models
     public class ShoppingCarItem
     {
         [Key]
-        public Guid CartItemId { get; set; }
+        public Guid CarItemId { get; set; }
 
-        public Guid CartId { get; set; }
+        public Guid CarId { get; set; }
 
         public Guid ProductId { get; set; }
 

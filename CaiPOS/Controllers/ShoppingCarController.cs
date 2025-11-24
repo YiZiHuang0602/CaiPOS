@@ -28,20 +28,22 @@ namespace CaiPOS.Controllers
         }
 
         /*[HttpGet("GetShoppingCartData")]
-        public async Task<List<ShoppingCarDto>> GetShoppingCarData()
+        public async Task<List<ShoppingCarItemDto>> GetShoppingCarData(string userName)
         {
-            var shoppingCarDatas = new List<ShoppingCarDto>();
-            var userId = GetUserIdByName(userName);
-            var shoppingCars = await _context.ShoppingCar.ToListAsync();
-            foreach(var shoppingCar in shoppingCars)
+            List<ShoppingCarItemDto> items = new List<ShoppingCarItemDto>();
+            var uId = GetUserIdByName(userName);
+            var car = await _context.ShoppingCar.FirstOrDefaultAsync(c => c.UserId == uId);
+            var item = _context.ShoppingCarItems.Where(ci => ci.CarId == car.carId).ToList();
+            foreach (var i in item)
             {
-                var dto = new ShoppingCarDto
+                var dto = new ShoppingCarItemDto
                 {
-                    CreatedAt = shoppingCar.CreatedAt,
-                    TotalQuantity = shoppingCar.TotalQuantity,
-                    TotalAmount = shoppingCar.TotalAmount
+                    ProductName = GetProductNameById(i.ProductId),
+                    Quantity = i.Quantity,
+                    Price = i.Price,
+                    Note = i.Note
                 };
-                shoppingCarDatas.Add(dto);
+                items.Add(dto);
             }
         }*/
     }

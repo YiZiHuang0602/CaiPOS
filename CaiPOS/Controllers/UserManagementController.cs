@@ -21,7 +21,7 @@ namespace CaiPOS.Controllers
         public async Task<List<UserManagementDto>> GetAllUserInfornation()
         {
             var userDatas = new List<UserManagementDto>();
-            var userData = await _context.UserManagement.ToListAsync();
+            var userData = await _context.Users.ToListAsync();
             foreach (var i in userData)
             {
                 var user = new UserManagementDto
@@ -41,7 +41,7 @@ namespace CaiPOS.Controllers
         {
             try
             {
-                var foundUser = await _context.UserManagement.FirstOrDefaultAsync(u => u.UserName == searchUser);
+                var foundUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName == searchUser);
                 if (foundUser != null)
                 {
                     return new ApiResponse<UserManagementDto>
@@ -81,7 +81,7 @@ namespace CaiPOS.Controllers
                     Message = string.Join(";", errors)
                 };
             }
-            var exists = await _context.UserManagement.AnyAsync(u => u.UserName == userManagementDto.UserName);
+            var exists = await _context.Users.AnyAsync(u => u.UserName == userManagementDto.UserName);
             if (exists)
             {
                 return new ApiResponse { Success = false, Message = "使用者名稱已被其他用戶使用" };
@@ -95,7 +95,7 @@ namespace CaiPOS.Controllers
                 Email = userManagementDto.Email,
             };
 
-            _context.UserManagement.Add(userData);
+            _context.Users.Add(userData);
             await _context.SaveChangesAsync();
 
             return new ApiResponse { Success = true, Message = "使用者新增成功" };
@@ -119,7 +119,7 @@ namespace CaiPOS.Controllers
             
             try
             {
-                var foundUser = await _context.UserManagement.FirstOrDefaultAsync(u => u.UserName == searchUser);
+                var foundUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName == searchUser);
                 if (foundUser == null) return new ApiResponse { Success = false, Message = $"找不到{searchUser}的資料" };
                 if (ModelState.IsValid)
                 {
@@ -147,9 +147,9 @@ namespace CaiPOS.Controllers
         {
             try
             {
-                var foundUser = await _context.UserManagement.FirstOrDefaultAsync(u => u.UserName == deleteUser);
+                var foundUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName == deleteUser);
                 if(foundUser == null) return new ApiResponse { Success = false, Message = $"找不到{deleteUser}的資料" };
-                _context.UserManagement.Remove(foundUser);
+                _context.Users.Remove(foundUser);
                 await _context.SaveChangesAsync();
                 return new ApiResponse { Success = true, Message = $"{deleteUser}的資料刪除成功" };
             }

@@ -6,7 +6,9 @@ namespace CaiPOS.Models
     {
         public Guid OrderId { get; set; }
 
-        public int MemberID { get; set; }
+        public Guid UserId { get; set; }
+
+        public Guid CarId { get; set; }
 
         public DateTime OrderDate { get; set; }
 

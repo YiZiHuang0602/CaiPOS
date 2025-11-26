@@ -5,7 +5,7 @@ namespace CaiPOS.Models
     public class ShoppingCarItem
     {
         [Key]
-        public Guid CarItemId { get; set; }
+        public Guid CarItemId { get; set; } = Guid.NewGuid();
 
         public Guid CarId { get; set; }
 
@@ -16,7 +16,7 @@ namespace CaiPOS.Models
 
         public int Quantity { get; set; }
 
-        public decimal Price { get; set; }
+        public int Price { get; set; }
 
         public string? Note { get; set; }
     }

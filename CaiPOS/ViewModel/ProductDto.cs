@@ -15,7 +15,7 @@ namespace CaiPOS.ViewModel
 
         [Required(ErrorMessage = "價格為必填欄位")]
         [Range(1, 500, ErrorMessage = "價格必須介於 1 到 500 元")]
-        public decimal Price { get; set; }
+        public int Price { get; set; }
 
         [Required(ErrorMessage = "銷售狀態為必填欄位")]
         [RegularExpression(@"^(熱賣中|售完)$", ErrorMessage = "銷售狀態只能填「熱賣中」或「售完」")]

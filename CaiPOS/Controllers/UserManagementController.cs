@@ -17,6 +17,12 @@ namespace CaiPOS.Controllers
             _context = context;
         }
 
+        private int createUserNumber()
+        {
+            var lastUser = _context.Users.OrderByDescending(u => u.UserNumber).FirstOrDefault();
+            return lastUser != null ? lastUser.UserNumber + 1 : 1;
+        }
+
         [HttpGet("GetAllUserInfornation")]
         public async Task<List<UserManagementDto>> GetAllUserInfornation()
         {
@@ -41,6 +47,10 @@ namespace CaiPOS.Controllers
         {
             try
             {
+                /*if (string.IsNullOrEmpty(searchUser))
+                {
+                    return new ApiResponse<UserManagementDto> { Success = false, Message = "請輸入想搜尋的使用者名稱", Data = null };
+                }*/
                 var foundUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName == searchUser);
                 if (foundUser != null)
                 {
@@ -57,7 +67,7 @@ namespace CaiPOS.Controllers
                         }
                     };
                 }
-                throw new Exception($"找不到{searchUser}使用者的資料");
+                throw new Exception($"找不到「{searchUser}」使用者的資料");
             }
             catch (Exception ex)
             {
@@ -88,6 +98,8 @@ namespace CaiPOS.Controllers
             }
             var userData = new UserManagement
             {
+                UserId = Guid.NewGuid(),
+                UserNumber = createUserNumber(),
                 UserName = userManagementDto.UserName,
                 Gender = userManagementDto.Gender,
                 Phone = userManagementDto.Phone,
@@ -116,7 +128,11 @@ namespace CaiPOS.Controllers
                     Message = string.Join(";", errors)
                 };
             }
-            
+            /*if (string.IsNullOrEmpty(searchUser))
+            {
+                throw new Exception("請輸入想編輯的使用者名稱");
+            }*/
+
             try
             {
                 var foundUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName == searchUser);
@@ -134,7 +150,7 @@ namespace CaiPOS.Controllers
                 }
 
                 await _context.SaveChangesAsync();
-                return new ApiResponse { Success = true, Message = "使用者資料更新成功" };
+                return new ApiResponse { Success = true, Message = "{searchUser}使用者資料更新成功" };
             }
             catch (Exception ex)
             {
@@ -147,11 +163,16 @@ namespace CaiPOS.Controllers
         {
             try
             {
+                /*if(string.IsNullOrEmpty(deleteUser))
+                {
+                    throw new Exception("請輸入想刪除的使用者名稱");
+                }*/
+
                 var foundUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName == deleteUser);
                 if(foundUser == null) return new ApiResponse { Success = false, Message = $"找不到{deleteUser}的資料" };
                 _context.Users.Remove(foundUser);
                 await _context.SaveChangesAsync();
-                return new ApiResponse { Success = true, Message = $"{deleteUser}的資料刪除成功" };
+                return new ApiResponse { Success = true, Message = $"{deleteUser}的資料成功刪除" };
             }
             catch (Exception ex)
             {

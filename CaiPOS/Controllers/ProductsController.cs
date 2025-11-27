@@ -47,11 +47,6 @@ namespace CaiPOS.Controllers
         {
             try
             {
-                /*if (string.IsNullOrEmpty(searchProduct))
-                {
-                    throw new Exception("請輸入商品名稱");
-                }*/
-
                 var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductName == searchProduct);
 
                 if (product != null)

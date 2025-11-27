@@ -1,5 +1,8 @@
 using CaiPOS.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<CaiPOSContext>(options =>
@@ -14,6 +17,23 @@ builder.Services.AddEndpointsApiExplorer(); // 添加端點 API 探索服務
 
 builder.Services.AddSwaggerGen(); // 添加 Swagger 生成服務
 
+builder.Services.AddAuthentication("Bearer") // 添加身份驗證服務
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+        }; 
+    });
+
+builder.Services.AddAuthorization(); // 添加授權服務
 
 var app = builder.Build();
 
@@ -29,5 +49,9 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.Run();

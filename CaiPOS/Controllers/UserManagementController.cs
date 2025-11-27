@@ -47,10 +47,6 @@ namespace CaiPOS.Controllers
         {
             try
             {
-                /*if (string.IsNullOrEmpty(searchUser))
-                {
-                    return new ApiResponse<UserManagementDto> { Success = false, Message = "請輸入想搜尋的使用者名稱", Data = null };
-                }*/
                 var foundUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName == searchUser);
                 if (foundUser != null)
                 {
@@ -96,6 +92,11 @@ namespace CaiPOS.Controllers
             {
                 return new ApiResponse { Success = false, Message = "使用者名稱已被其他用戶使用" };
             }
+            var emailExists = await _context.Users.AnyAsync(u => u.Email == userManagementDto.Email);
+            if (emailExists)
+            {
+                return new ApiResponse { Success = false, Message = "電子郵件已被其他用戶使用" };
+            }
             var userData = new UserManagement
             {
                 UserId = Guid.NewGuid(),
@@ -110,7 +111,7 @@ namespace CaiPOS.Controllers
             _context.Users.Add(userData);
             await _context.SaveChangesAsync();
 
-            return new ApiResponse { Success = true, Message = "使用者新增成功" };
+            return new ApiResponse { Success = true, Message = "使用者註冊成功" };
         }
 
         [HttpPatch("EditUserInformation")]
@@ -128,10 +129,6 @@ namespace CaiPOS.Controllers
                     Message = string.Join(";", errors)
                 };
             }
-            /*if (string.IsNullOrEmpty(searchUser))
-            {
-                throw new Exception("請輸入想編輯的使用者名稱");
-            }*/
 
             try
             {
@@ -163,11 +160,6 @@ namespace CaiPOS.Controllers
         {
             try
             {
-                /*if(string.IsNullOrEmpty(deleteUser))
-                {
-                    throw new Exception("請輸入想刪除的使用者名稱");
-                }*/
-
                 var foundUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName == deleteUser);
                 if(foundUser == null) return new ApiResponse { Success = false, Message = $"找不到{deleteUser}的資料" };
                 _context.Users.Remove(foundUser);
